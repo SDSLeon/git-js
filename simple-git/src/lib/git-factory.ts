@@ -13,6 +13,7 @@ import {
    progressMonitorPlugin,
    spawnOptionsPlugin,
    timeoutPlugin,
+   wslPlugin,
 } from './plugins';
 import { suffixPathsPlugin } from './plugins/suffix-paths.plugin';
 import { createInstanceConfig, folderExists } from './utils';
@@ -47,7 +48,7 @@ export function gitInstanceFactory(
       options
    );
 
-   if (!folderExists(config.baseDir)) {
+   if (!config.wsl && !folderExists(config.baseDir)) {
       throw new api.GitConstructError(
          config,
          `Cannot use simple-git on a directory that does not exist`
@@ -70,6 +71,10 @@ export function gitInstanceFactory(
    config.errors && plugins.add(errorDetectionPlugin(config.errors));
 
    customBinaryPlugin(plugins, config.binary, config.unsafe?.allowUnsafeCustomBinary);
+
+   if (config.wsl) {
+      wslPlugin(plugins, config.wsl);
+   }
 
    return new Git(config, plugins);
 }

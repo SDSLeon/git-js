@@ -129,6 +129,29 @@ export interface SimpleGitPluginConfig {
 
    spawnOptions: Pick<SpawnOptions, 'uid' | 'gid'>;
 
+   /**
+    * Configure simple-git to run git commands inside a WSL (Windows Subsystem
+    * for Linux) distribution.  When set, the spawned binary becomes `wsl.exe`
+    * and every git invocation is prefixed with the necessary WSL arguments.
+    *
+    * The `baseDir` option is ignored when `wsl` is configured — the working
+    * directory inside WSL is controlled by the `path` property.
+    *
+    * ```typescript
+    * import { simpleGit } from 'simple-git';
+    *
+    * const git = simpleGit({
+    *    wsl: { distro: 'Ubuntu', path: '/home/user/project' },
+    * });
+    * ```
+    */
+   wsl: {
+      /** Name of the WSL distribution (as shown by `wsl -l -q`). */
+      distro: string;
+      /** Absolute Linux path used as the working directory inside WSL. */
+      path: string;
+   };
+
    unsafe: {
       /**
        * Allows potentially unsafe values to be supplied in the `binary` configuration option and
